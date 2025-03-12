@@ -1,5 +1,7 @@
 package com.itau.cadastro_chave_pix.domains;
 
+import com.itau.cadastro_chave_pix.domains.enums.StatusChave;
+import com.itau.cadastro_chave_pix.domains.enums.TipoPessoa;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,6 +40,12 @@ public class ChavePix {
     @Column(length = 45)
     private String sobrenomeCorrentista;
 
+    @Enumerated(EnumType.STRING)
+    private TipoPessoa tipoPessoa;
+
+    @Enumerated(EnumType.STRING)
+    private StatusChave status;
+
     @Column(nullable = false)
     private LocalDateTime dataHoraInclusao;
 
@@ -46,5 +54,6 @@ public class ChavePix {
     @PrePersist
     public void prePersist() {
         this.dataHoraInclusao = LocalDateTime.now();
+        this.status = StatusChave.ATIVA;
     }
 }
