@@ -8,8 +8,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "chaves_pix")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChavePix {
@@ -28,10 +27,10 @@ public class ChavePix {
     private String tipoConta; // corrente ou poupança
 
     @Column(nullable = false)
-    private int numeroAgencia;
+    private Integer numeroAgencia;
 
     @Column(nullable = false)
-    private int numeroConta;
+    private Integer numeroConta;
 
     @Column(nullable = false, length = 30)
     private String nomeCorrentista;
