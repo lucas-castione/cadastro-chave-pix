@@ -10,6 +10,10 @@ public interface ChavePixRepository extends JpaRepository<ChavePix, UUID> {
 
     Optional<ChavePix> findByValorChave(String valorChave);
 
-    long countByNumeroAgenciaAndNumeroConta(int numeroAgencia, int numeroConta);
+    long countByNumeroAgenciaAndNumeroConta(Integer numeroAgencia, Integer numeroConta);
+
+    boolean existsByValorChave(String valorChave);
+
+    long countByNumeroConta(Integer numeroConta);
 
 }
