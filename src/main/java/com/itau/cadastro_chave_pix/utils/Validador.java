@@ -45,18 +45,15 @@ public class Validador {
             return false;
         }
 
-        String codigoPais = celularSemPrefixo.substring(0, celularSemPrefixo.length() - 11); // O código do país está no início
-        if (!codigoPais.matches("\\d{1,2}")) { // Código do país deve ser numérico e ter 1 ou 2 dígitos
-            return false;
+        String codigoPais = celularSemPrefixo.substring(0, celularSemPrefixo.length() - 11);
+        if (!codigoPais.matches("\\d{1,2}")) {
         }
 
-        // Verifica o DDD (2 a 3 dígitos)
         String ddd = celularSemPrefixo.substring(codigoPais.length(), celularSemPrefixo.length() - 9);
         if (!ddd.matches("\\d{2,3}")) {
             return false;
         }
 
-        // Verifica o número do celular (9 dígitos)
         String numero = celularSemPrefixo.substring(codigoPais.length() + ddd.length());
         if (numero.length() != 9 || !numero.matches("\\d{9}")) {
             return false;
