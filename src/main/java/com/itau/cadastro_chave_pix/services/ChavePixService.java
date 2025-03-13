@@ -6,6 +6,8 @@ import com.itau.cadastro_chave_pix.domains.enums.TipoPessoa;
 import com.itau.cadastro_chave_pix.repositories.ChavePixRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -17,9 +19,10 @@ public class ChavePixService {
         this.chavePixRepository = chavePixRepository;
     }
 
-    public ChavePix cadastrarChave(ChavePix chavePix) {
+    public ChavePix incluirChavePix(ChavePix chavePix) {
         validarChave(chavePix);
-        chavePix.setId(UUID.randomUUID());
+        chavePix.setStatus(StatusChave.ATIVA);
+
         return chavePixRepository.save(chavePix);
     }
 
@@ -39,12 +42,20 @@ public class ChavePixService {
         }
     }
 
-    public void inativarChave(UUID id) {
+    public ChavePix inativarChave(UUID id) {
         ChavePix chave = chavePixRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Chave não encontrada"));
 
         chave.setStatus(StatusChave.INATIVA);
-        chavePixRepository.save(chave);
+        return chavePixRepository.save(chave);
+    }
+
+    public Optional<ChavePix> buscarPorId(UUID id) {
+        return chavePixRepository.findById(id);
+    }
+
+    public List<ChavePix> listarPorConta(Integer numeroAgencia, Integer numeroConta) {
+        return chavePixRepository.findByNumeroAgenciaAndNumeroConta(numeroAgencia, numeroConta);
     }
 
 
