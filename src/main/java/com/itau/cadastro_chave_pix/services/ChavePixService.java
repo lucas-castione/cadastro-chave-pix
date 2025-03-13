@@ -2,8 +2,10 @@ package com.itau.cadastro_chave_pix.services;
 
 import com.itau.cadastro_chave_pix.domains.ChavePix;
 import com.itau.cadastro_chave_pix.domains.enums.StatusChave;
+import com.itau.cadastro_chave_pix.domains.enums.TipoChave;
 import com.itau.cadastro_chave_pix.domains.enums.TipoPessoa;
 import com.itau.cadastro_chave_pix.repositories.ChavePixRepository;
+import com.itau.cadastro_chave_pix.utils.validators.ValidatorUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +42,9 @@ public class ChavePixService {
         if (quantidadeChaves >= limiteChaves) {
             throw new RuntimeException("Limite de chaves atingido para essa conta.");
         }
+
+        validarChave(chavePix.getValorChave(),chavePix.getTipoChave());
+
     }
 
     public ChavePix inativarChave(UUID id) {
@@ -56,6 +61,13 @@ public class ChavePixService {
 
     public List<ChavePix> listarPorConta(Integer numeroAgencia, Integer numeroConta) {
         return chavePixRepository.findByNumeroAgenciaAndNumeroConta(numeroAgencia, numeroConta);
+    }
+
+
+    public void validarChave(String chave, TipoChave tipo) {
+        if (!ValidatorUtils.validarChave(chave, tipo)) {
+            throw new IllegalArgumentException("Chave Pix inválida!");
+        }
     }
 
 
