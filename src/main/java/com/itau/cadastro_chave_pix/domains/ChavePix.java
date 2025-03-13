@@ -1,6 +1,7 @@
 package com.itau.cadastro_chave_pix.domains;
 
 import com.itau.cadastro_chave_pix.domains.enums.StatusChave;
+import com.itau.cadastro_chave_pix.domains.enums.TipoChave;
 import com.itau.cadastro_chave_pix.domains.enums.TipoPessoa;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,16 +18,16 @@ public class ChavePix {
 
     @Id
     @GeneratedValue
-    private UUID id;  // Chave primária no formato UUID
+    private UUID id;
 
-    @Column(nullable = false, length = 9)
-    private String tipoChave; // celular, email, cpf, etc.
+    @Enumerated(EnumType.STRING)
+    private TipoChave tipoChave;
 
     @Column(nullable = false, unique = true, length = 77)
     private String valorChave;
 
     @Column(nullable = false, length = 10)
-    private String tipoConta; // corrente ou poupança
+    private String tipoConta;
 
     @Column(nullable = false)
     private Integer numeroAgencia;
