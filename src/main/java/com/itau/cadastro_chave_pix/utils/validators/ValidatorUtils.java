@@ -1,6 +1,7 @@
 package com.itau.cadastro_chave_pix.utils.validators;
 
 import com.itau.cadastro_chave_pix.domains.enums.TipoChave;
+import com.itau.cadastro_chave_pix.exceptions.ValidacaoException;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -19,7 +20,10 @@ public class ValidatorUtils {
         ChavePixValidator validator = VALIDATORS.get(tipo);
 
         if (validator == null) {
-            throw new IllegalArgumentException("Tipo de chave inválido.");
+            throw new ValidacaoException("Tipo de chave inválido.");
+        }
+        if (!validator.validarChave(chave)) {
+            throw new ValidacaoException("A chave " + chave + " não é válida para o tipo " + tipo);
         }
 
         return validator.validarChave(chave);
