@@ -1,5 +1,6 @@
 package com.itau.cadastro_chave_pix.utils.validators;
 
+import com.itau.cadastro_chave_pix.domains.ChavePix;
 import com.itau.cadastro_chave_pix.domains.enums.TipoChave;
 import com.itau.cadastro_chave_pix.exceptions.ValidacaoException;
 
@@ -16,17 +17,18 @@ public class ValidatorUtils {
         VALIDATORS.put(TipoChave.CELULAR, new CelularValidator());
     }
 
-    public static boolean validarChave(String chave, TipoChave tipo) {
-        ChavePixValidator validator = VALIDATORS.get(tipo);
+    public static boolean validarChave(ChavePix chavePix) {
+        CadastroPixValidator.validar(chavePix);
+        ChavePixValidator validator = VALIDATORS.get(chavePix.getTipoChave());
 
         if (validator == null) {
             throw new ValidacaoException("Tipo de chave inválido.");
         }
-        if (!validator.validarChave(chave)) {
-            throw new ValidacaoException("A chave " + chave + " não é válida para o tipo " + tipo);
+        if (!validator.validarChave(chavePix.getValorChave())) {
+            throw new ValidacaoException("A chave " + chavePix.getValorChave() + " não é válida para o tipo " + chavePix.getTipoChave());
         }
 
-        return validator.validarChave(chave);
+        return validator.validarChave(chavePix.getValorChave());
     }
 
 

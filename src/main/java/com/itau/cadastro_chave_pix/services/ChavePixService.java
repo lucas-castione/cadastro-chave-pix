@@ -33,6 +33,10 @@ public class ChavePixService {
             throw new IllegalArgumentException("Chave Pix já cadastrada para outro correntista.");
         }
 
+        if (!ValidatorUtils.validarChave(chavePix)) {
+            throw new IllegalArgumentException("erro ao validar chave pix!");
+        }
+
         long quantidadeChaves = chavePixRepository.countByNumeroAgenciaAndNumeroConta(
                 chavePix.getNumeroAgencia(), chavePix.getNumeroConta()
         );
@@ -42,8 +46,6 @@ public class ChavePixService {
         if (quantidadeChaves >= limiteChaves) {
             throw new RuntimeException("Limite de chaves atingido para essa conta.");
         }
-
-        validarChave(chavePix.getValorChave(),chavePix.getTipoChave());
 
     }
 
@@ -62,14 +64,5 @@ public class ChavePixService {
     public List<ChavePix> listarPorConta(Integer numeroAgencia, Integer numeroConta) {
         return chavePixRepository.findByNumeroAgenciaAndNumeroConta(numeroAgencia, numeroConta);
     }
-
-
-    public void validarChave(String chave, TipoChave tipo) {
-        if (!ValidatorUtils.validarChave(chave, tipo)) {
-            throw new IllegalArgumentException("Chave Pix inválida!");
-        }
-    }
-
-
 
 }
