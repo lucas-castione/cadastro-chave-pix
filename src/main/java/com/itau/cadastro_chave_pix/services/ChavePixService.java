@@ -102,11 +102,27 @@ public class ChavePixService {
 
 
     public Optional<ChavePix> buscarPorId(UUID id) {
+        ChavePix chave = chavePixRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Chave não encontrada"));
+
         return chavePixRepository.findById(id);
     }
 
     public List<ChavePix> listarPorConta(Integer numeroAgencia, Integer numeroConta) {
-        return chavePixRepository.findByNumeroAgenciaAndNumeroConta(numeroAgencia, numeroConta);
+
+        List<ChavePix> chaves = chavePixRepository.findByNumeroAgenciaAndNumeroConta(numeroAgencia, numeroConta);
+        if(chaves.isEmpty()){
+            throw new NotFoundException("Chave não encontrada");
+        }
+        return chaves;
+    }
+
+    public List<ChavePix> buscarPorNomeCorrentista(String nome) {
+        List<ChavePix> chaves = chavePixRepository.findByNomeCorrentista(nome);
+        if(chaves.isEmpty()){
+            throw new NotFoundException("nome não encontrado");
+        }
+        return chaves;
     }
 
 

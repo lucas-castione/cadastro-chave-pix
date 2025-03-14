@@ -50,4 +50,9 @@ public class ChavePixController {
         List<ChavePix> chaves = chavePixService.listarPorConta(numeroAgencia, numeroConta);
         return ResponseEntity.ok(chaves);
     }
+
+    @GetMapping("/nome")
+    public ResponseEntity<List<ChavePix>> buscarPorNome(@RequestParam String nome) {
+        return ResponseEntity.ok(chavePixService.buscarPorNomeCorrentista(nome));
+    }
 }

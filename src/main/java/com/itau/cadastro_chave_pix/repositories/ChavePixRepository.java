@@ -20,4 +20,6 @@ public interface ChavePixRepository extends JpaRepository<ChavePix, UUID> {
 
     List<ChavePix> findByNumeroAgenciaAndNumeroConta(Integer numeroAgencia, Integer numeroConta);
 
+    List<ChavePix> findByNomeCorrentista(String nomeCorrentista);
+
 }
