@@ -8,6 +8,6 @@ public class EmailValidator implements ChavePixValidator{
 
     @Override
     public boolean validarChave(String chave) {
-        return chave != null && EMAIL_PATTERN.matcher(chave).matches();
+        return chave != null && chave.length() <= 77 && EMAIL_PATTERN.matcher(chave).matches();
     }
 }
