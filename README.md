@@ -22,7 +22,7 @@ Este projeto é uma API desenvolvida em **Spring Boot** para gerenciar chaves Pi
 
 1. Clone o repositório:
    ```sh
-   git clone <repo-url>
+   git clone https://github.com/lucas-castione/cadastro-chave-pix.git
    ```
 2. Configure o banco de dados PostgreSQL.
 3. Ajuste o arquivo `application.properties` ou as variáveis de ambiente para conexão ao banco.
