@@ -32,6 +32,8 @@ class ChavePixServiceTest {
 
     private ChavePix chavePix;
 
+    private ChavePix chaveExistente;
+
     private UUID chaveId;
 
     @BeforeEach
@@ -208,5 +210,88 @@ class ChavePixServiceTest {
         List<ChavePix> resultado = chavePixService.listarPorConta(1234, 567890);
 
         assertTrue(resultado.isEmpty());
+    }
+
+
+
+
+
+
+
+
+    @BeforeEach
+    void setup() {
+        chaveId = UUID.randomUUID();
+        chaveExistente = new ChavePix();
+        chaveExistente.setId(chaveId);
+        chaveExistente.setTipoChave(TipoChave.CPF);
+        chaveExistente.setValorChave("49091852836");
+        chaveExistente.setTipoConta("Corrente");
+        chaveExistente.setNumeroAgencia(1234);
+        chaveExistente.setNumeroConta(56789);
+        chaveExistente.setNomeCorrentista("João");
+        chaveExistente.setTipoPessoa(TipoPessoa.FISICA);
+        chaveExistente.setStatus(StatusChave.ATIVA);
+    }
+
+    @Test
+    void deveAtualizarChavePixQuandoValida() {
+        // Simula que a chave existe no banco
+        when(chavePixRepository.findById(chaveId)).thenReturn(Optional.of(chaveExistente));
+        when(chavePixRepository.save(any(ChavePix.class))).thenReturn(chaveExistente);
+
+        ChavePix chaveAtualizada = new ChavePix();
+        chaveAtualizada.setValorChave(chaveExistente.getValorChave());
+        chaveAtualizada.setTipoChave(chaveExistente.getTipoChave());
+        chaveAtualizada.setTipoConta("POUPANÇA");
+        chaveAtualizada.setNumeroAgencia(4321);
+        chaveAtualizada.setNumeroConta(98765);
+        chaveAtualizada.setTipoPessoa(TipoPessoa.FISICA);
+        chaveAtualizada.setNomeCorrentista("João Silva");
+        chaveAtualizada.setSobrenomeCorrentista("Silva");
+
+        ChavePix resultado = chavePixService.atualizarChave(chaveId, chaveAtualizada);
+
+        assertEquals("POUPANÇA", resultado.getTipoConta());
+        assertEquals(4321, resultado.getNumeroAgencia());
+        assertEquals(98765, resultado.getNumeroConta());
+        assertEquals("João Silva", resultado.getNomeCorrentista());
+
+        verify(chavePixRepository, times(1)).save(chaveExistente);
+    }
+
+    @Test
+    void deveLancarNotFoundExceptionSeChaveNaoExistir() {
+        when(chavePixRepository.findById(chaveId)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> chavePixService.atualizarChave(chaveId, new ChavePix()));
+
+        assertEquals("Chave Pix não encontrada.", exception.getMessage());
+    }
+
+    @Test
+    void deveLancarValidacaoExceptionSeChaveInativa() {
+        chaveExistente.setStatus(StatusChave.INATIVA);
+        when(chavePixRepository.findById(chaveId)).thenReturn(Optional.of(chaveExistente));
+
+        ValidacaoException exception = assertThrows(ValidacaoException.class,
+                () -> chavePixService.atualizarChave(chaveId, new ChavePix()));
+
+        assertEquals("Chave Pix inativa. Alteração não permitida.", exception.getMessage());
+    }
+
+    @Test
+    void deveLancarValidacaoExceptionSeValorOuTipoChaveAlterado() {
+        when(chavePixRepository.findById(chaveId)).thenReturn(Optional.of(chaveExistente));
+
+        ChavePix chaveAtualizada = new ChavePix();
+        chaveAtualizada.setValorChave("99999999999");
+        chaveAtualizada.setTipoChave(TipoChave.EMAIL);
+
+        ValidacaoException exception = assertThrows(ValidacaoException.class,
+                () -> chavePixService.atualizarChave(chaveId, chaveAtualizada));
+
+        assertEquals("O valor e o tipo da chave não podem ser alterados.", exception.getMessage());
     }
 }
