@@ -26,18 +26,6 @@ public class GlobalExceptionHandler {
     }
 
 
-
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<Map<String, Object>> notFound(NotFoundException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("timestamp", LocalDateTime.now());
-        response.put("status", 404);
-        response.put("error", "não encontrado");
-        response.put("message", ex.getMessage());
-
-        return ResponseEntity.status(404).body(response);
-    }
-
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<Map<String, String>> handleInvalidFormatException(InvalidFormatException ex) {
         Map<String, String> response = new HashMap<>();

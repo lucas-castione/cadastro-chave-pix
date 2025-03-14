@@ -65,6 +65,7 @@ public class ChavePixService {
 
     }
 
+
     private void validarChave(ChavePix chavePix) {
 
         if (!ValidatorUtils.validarChave(chavePix)) {
