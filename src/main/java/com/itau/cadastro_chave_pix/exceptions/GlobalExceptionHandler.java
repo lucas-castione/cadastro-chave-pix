@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
@@ -19,11 +18,24 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleValidacaoException(ValidacaoException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("timestamp", LocalDateTime.now());
-        response.put("status", HttpStatus.UNPROCESSABLE_ENTITY.value());
+        response.put("status", 422);
         response.put("error", "Erro de Validação");
         response.put("message", ex.getMessage());
 
-        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
+        return ResponseEntity.status(422).body(response);
+    }
+
+
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Map<String, Object>> notFound(NotFoundException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("timestamp", LocalDateTime.now());
+        response.put("status", 404);
+        response.put("error", "não encontrado");
+        response.put("message", ex.getMessage());
+
+        return ResponseEntity.status(404).body(response);
     }
 
     @ExceptionHandler(InvalidFormatException.class)

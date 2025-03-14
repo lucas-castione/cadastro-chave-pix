@@ -4,11 +4,14 @@ import com.itau.cadastro_chave_pix.domains.ChavePix;
 import com.itau.cadastro_chave_pix.domains.enums.StatusChave;
 import com.itau.cadastro_chave_pix.domains.enums.TipoChave;
 import com.itau.cadastro_chave_pix.domains.enums.TipoPessoa;
+import com.itau.cadastro_chave_pix.exceptions.NotFoundException;
 import com.itau.cadastro_chave_pix.exceptions.ValidacaoException;
 import com.itau.cadastro_chave_pix.repositories.ChavePixRepository;
 import com.itau.cadastro_chave_pix.utils.validators.ValidatorUtils;
 import jakarta.transaction.Transactional;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,7 +41,7 @@ public class ChavePixService {
     public ChavePix atualizarChave(UUID id, ChavePix chaveAtualizada) {
 
         ChavePix chaveAntiga = chavePixRepository.findById(id)
-                .orElseThrow(() -> new ValidacaoException("Chave Pix não encontrada."));
+                .orElseThrow(() -> new NotFoundException("Chave Pix não encontrada."));
 
         if (chaveAntiga.getStatus() != StatusChave.ATIVA) {
             throw new ValidacaoException("Chave Pix inativa. Alteração não permitida.");
@@ -82,13 +85,20 @@ public class ChavePixService {
 
     public ChavePix inativarChave(UUID id) {
         ChavePix chave = chavePixRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Chave não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Chave não encontrada"));
+
+        if (chave.getStatus() == StatusChave.INATIVA) {
+            throw new ValidacaoException("A chave já está inativa.");
+        }
 
         chave.setStatus(StatusChave.INATIVA);
 
         chave.setDataHoraInativacao(LocalDateTime.now());
+
         return chavePixRepository.save(chave);
     }
+
+
 
     public Optional<ChavePix> buscarPorId(UUID id) {
         return chavePixRepository.findById(id);
