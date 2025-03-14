@@ -23,6 +23,12 @@ public class ChavePixController {
         return ResponseEntity.status(200).body(novaChave);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<ChavePix> atualizarChave(@PathVariable UUID id, @RequestBody ChavePix chaveAtualizada) {
+        ChavePix chavePixAtualizada = chavePixService.atualizarChave(id, chaveAtualizada);
+        return ResponseEntity.ok(chavePixAtualizada);
+    }
+
     @PutMapping("/{id}/inativar")
     public ResponseEntity<ChavePix> inativar(@PathVariable UUID id) {
         ChavePix chaveInativa = chavePixService.inativarChave(id);
